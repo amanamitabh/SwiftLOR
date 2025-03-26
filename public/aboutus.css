@@ -1,0 +1,130 @@
+body {
+    margin: 0;
+    background-color: #CEC2D6;
+    font-family: Inter;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+
+.navbar{
+  position: sticky;
+  top: 0;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #F3EFE1;
+  border-bottom: solid black 4px;
+  max-height: 52px;
+  margin-bottom: 50px;
+}
+
+.navelem{
+  float: left;
+}
+
+.navelem a{
+
+  display: block;
+  font-family: 'Inter';
+  color: black;
+  text-align: center;
+  padding-left: 48px;
+  padding-right: 48px;
+  text-decoration: none;
+  border-radius: 16px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.navelem a:hover{
+  background-color: black;
+  color: #DEFF89;
+  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.3);
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.title{
+  margin-top: 17px;
+  padding-left: 12px;
+  padding-right: 160px;
+  font-family: 'Inter';
+  font-size: 24px;
+  font-weight: 900;
+}
+
+
+.container{
+  display: flex;
+  padding: 20px;
+  gap: 140px;
+
+}
+
+.box1{
+  margin-left: 160px;
+  background-color: aliceblue;
+  height: 520px;
+  width: 540px;
+  border-radius: 16px;
+  border-style: solid;
+  border-width: 2px;
+  box-shadow: 8px 8px 0px black;
+}
+
+.box2{
+  background-color: aliceblue;
+  margin-left: 40px;
+  height: 200px;
+  width: 400px;
+  border-radius: 16px;
+  border-style: solid;
+  border-width: 2px;
+  box-shadow: 8px 8px 0px black;
+}
+
+.box3{
+  margin-top: 20px;
+  background-color: aliceblue;
+  margin-left: -40px;
+  height: 90px;
+  width: 480px;
+  border-radius: 16px;
+  border-style: solid;
+  border-width: 2px;
+  box-shadow: 8px 8px 0px black;
+  text-align: center;
+}
+
+.subcontainer{
+  float: right;
+  margin-top: -70px;
+}
+
+p{
+  padding: 16px;
+  font-size: 22px;
+  font-weight: 500;
+  text-align: center;  
+}
+
+h1{
+  font-family: Poppins;
+  font-size: 26px;
+  font-weight: 800;
+  justify-self: center;
+  margin-top: 4px;
+}
+
+.endtext{
+  padding: 4px;
+  font-size: 24px;
+}
+
+.boxtext{
+  font-size: 18px;
+}

@@ -3,6 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <link rel="stylesheet" href="index.css" />
+    <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <meta
@@ -24,11 +26,39 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>React App</title>
+    <title>SwiftLOR - Welcome</title>
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div class="container">
+        <div class="left-section">
+            <h1>Welcome!</h1>
+            <p>Click, submit, impress—it's that easy!</p>
+
+            <p class="small-text" style="font-weight: 600; padding-top: 20px; font-size: 17px; margin-bottom: 4px;">New here?</p>
+            <a href="signup.html"><button class="signup-btn">Signup</button></a>
+
+            <p class="small-text" style="font-weight: 600; padding-top: 20px; font-size: 17px; margin-bottom: 4px;">Already have an account?</p>
+            <button class="login-btn">Login</button>
+
+            <div class="divider">
+                <span>----------------------- or continue with -----------------------</span>
+            </div>
+
+            <div class="social-icons">
+                <img src="apple.png" alt="Apple">
+                <img src="google.png" alt="Google">
+                <img src="facebook.png" alt="Facebook">
+            </div>
+        </div>
+
+        <div class="right-section">
+            <img src="robot.jpg" alt="Robot delivering mail" style="margin-top: -28px; margin-bottom: -8px;">
+            <p style="font-size: 24px; margin-bottom: -10px;"><strong>Make your LOR generating process hassle-free with SwiftLOR!</strong></p>
+        </div>
+    </div>
+  
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
@@ -39,5 +69,6 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
+      
   </body>
 </html>
