@@ -1,0 +1,106 @@
+/* Global Styles */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #F3EFE1;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Main container */
+.container {
+    display: flex;
+    width: 70%;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    padding: 40px;
+}
+
+/* Left section */
+.left-section {
+    flex: 1;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Headings */
+h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+p {
+    font-size: 16px;
+    color: #333;
+}
+
+/* Signup & Login buttons */
+.signup-btn, .login-btn {
+    width: 200px;
+    padding: 12px;
+    font-size: 19px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-bottom: 10px;
+}
+
+.signup-btn {
+    background: #DEFF89;
+    color: black;
+}
+
+.signup-btn:hover {
+    background: #c8e970;
+}
+
+.login-btn {
+    background: #cfc2d6;
+    color: black;
+}
+
+.login-btn:hover {
+    background: #b5a6be;
+}
+
+/* Divider */
+.divider {
+    margin: 20px 0;
+    font-size: 14px;
+    color: gray;
+}
+
+/* Social icons */
+.social-icons img {
+    width: 32px;
+    margin: 10px;
+    cursor: pointer;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+/* Right section */
+.right-section {
+    flex: 1;
+    text-align: center;
+    background: #cfc2d6;
+    padding: 30px;
+    border-radius: 16px;
+}
+
+.right-section img {
+    width: 350px;
+    margin-bottom: 20px;
+}
+
+.right-section p {
+    font-size: 16px;
+    font-weight: bold;
+    color: black;
+}

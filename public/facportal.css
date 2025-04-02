@@ -1,0 +1,140 @@
+body{
+    margin: 0;
+    font-family: 'Inter';
+}
+
+.navbar{
+    position: sticky;
+    top: 0;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #F3EFE1;
+    border-bottom: solid black 4px;
+    max-height: 52px;
+}
+  
+.navelem{
+float: left;
+}
+
+.navelem a{
+
+display: block;
+color: black;
+text-align: center;
+padding-left: 48px;
+padding-right: 48px;
+text-decoration: none;
+border-radius: 16px;
+transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.navelem a:hover{
+background-color: black;
+color: #DEFF89;
+box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.3);
+padding-top: 4px;
+padding-bottom: 4px;
+}
+
+.title{
+padding-left: 12px;
+padding-right: 160px;
+font-family: 'Inter';
+font-size: 24px;
+font-weight: 900;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+    font-weight: bold;
+}
+
+.logout {
+    background-color: white;
+    color: black;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.hero {
+    background-color: #DEFF89;
+    padding: 80px;
+    border-radius: 0;   
+    display: flex;
+    align-items: center;
+    height: 224px;
+}
+.lor-image {
+    position: absolute;
+    left: 30px;
+    top: 170px;
+    margin-top: -80px;
+    height: 350px; 
+    width: 389px;
+}
+.text-section {
+    max-width: 600px;
+    margin: auto;
+    text-align: center;
+}
+
+h2 {
+    font-size: 40px;
+    font-weight: bold;
+}
+
+.search-section {
+    background-color: #F4F1DE;
+    padding: 40px;
+    text-align: center;
+    height: 174px;
+    
+}
+.search-bar input {
+    width: 50%;
+    padding: 12px;
+    font-size: 18px;
+    border: 2px solid black;
+    border-radius: 5px;
+    outline: none;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 70px;
+    gap: 50px;
+}
+
+button {
+    padding: 15px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border: 2px solid black;
+    border-radius: 10px;
+    cursor: not-allowed;
+    background-color: #000;
+    color: white;
+    transition: all 0.2s;
+}
+
+button:hover {
+    background-color: rgb(16, 14, 14);
+}
+
+button:active {
+    transform: translateY(3px);
+}
+
+button:disabled {
+    background-color: #000000;
+    cursor: not-allowed;
+}

@@ -18,6 +18,26 @@
       <li class="navelem" style="margin-left: auto;"><img src="user.png" width="40px" height="40px" style="padding-top: 8px; padding-right: 8px;"></li>
     </ul>
     <div class="partition1">
+      <div id="success-message" style="
+      display: none; 
+      position: fixed; 
+      top: 20px; 
+      left: 50%; 
+      transform: translateX(-50%);
+      background: black;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: bold;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out, top 0.5s ease-in-out;
+      z-index: 1000;
+  ">
+      ✅ Form submitted successfully!
+  </div>
+  
       <img src="lorpic.jpg" height="350px" width="389px" style="padding-top: 50px; float:right">
       <aside><h1 class="displaytext">"Skip the stress, <br>Press to request"</h1></aside>
     </div>
@@ -38,5 +58,40 @@
           <p class="buttontext">Review your application</p>
       </div>
   </div>     
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        if (sessionStorage.getItem("formSubmitted") === "true") {
+            // ✅ Create success message div
+            const successMessage = document.createElement("div");
+            successMessage.textContent = "✅ Form submitted successfully!";
+            successMessage.style.position = "fixed";
+            successMessage.style.top = "10px";
+            successMessage.style.left = "50%";
+            successMessage.style.transform = "translateX(-50%)";
+            successMessage.style.background = "black";
+            successMessage.style.color = "white";
+            successMessage.style.padding = "12px 20px";
+            successMessage.style.borderRadius = "50px"; // Rounded Dynamic Island shape
+            successMessage.style.boxShadow = "0px 4px 10px rgba(0, 0, 0, 0.1)";
+            successMessage.style.fontSize = "14px";
+            successMessage.style.fontWeight = "bold";
+            successMessage.style.transition = "opacity 1s ease-in-out";
+    
+            document.body.appendChild(successMessage);
+    
+            // ✅ Remove session flag
+            sessionStorage.removeItem("formSubmitted");
+    
+            // ✅ Hide message after 5 seconds
+            setTimeout(() => {
+                successMessage.style.opacity = "0";
+                setTimeout(() => successMessage.remove(), 1000);
+            }, 5000);
+        }
+    });
+    </script>
+    
+
   </body>
 </html>

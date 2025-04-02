@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     function createDots() {
         const animatedBg = document.querySelector(".animated-bg");
         for (let i = 0; i < 20; i++) {
@@ -21,17 +21,16 @@ document.addEventListener("DOMContentLoaded", function() {
     // Input field styling on focus/blur
     const inputs = document.querySelectorAll("input");
     inputs.forEach(input => {
-        input.addEventListener("focus", () => {
-            input.style.backgroundColor = "#F3E8FF";
-        });
-        input.addEventListener("blur", () => {
-            input.style.backgroundColor = "#CDC2D6";
-        });
+        input.addEventListener("focus", () => input.style.backgroundColor = "#F3E8FF");
+        input.addEventListener("blur", () => input.style.backgroundColor = "#CDC2D6");
     });
 
     // Form submission logic
     const submitBtn = document.querySelector(".submit-btn");
-    submitBtn.addEventListener("click", function() {
+
+    submitBtn.addEventListener("click", async function (event) {
+        event.preventDefault(); // Prevent default form behavior
+
         const formData = {
             registrationNumber: document.querySelector("input[placeholder='EX:23BCT0172']").value,
             name: document.querySelector("input[placeholder='Enter your name']").value,
@@ -45,22 +44,35 @@ document.addEventListener("DOMContentLoaded", function() {
                                .filter(value => value !== "")
         };
 
-        // Send form data to the server
-        fetch("/submit-form", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(formData)
-        })
-        .then(response => response.json())
-        .then(data => {
-            alert("Form submitted successfully!");
-            console.log("Server Response:", data);
-        })
-        .catch(error => {
+        // ✅ Check if required fields are empty
+        if (!formData.registrationNumber || !formData.name || !formData.examScore || !formData.facultyEmail) {
+            alert("⚠️ Please fill in all required fields.");
+            return;
+        }
+
+        try {
+            let response = await fetch("http://localhost:5000/submit-form", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData)
+            });
+
+            let data = await response.json();
+
+            if (response.ok) {
+                console.log("Server Response:", data);
+
+                // ✅ Store a success flag in sessionStorage
+                sessionStorage.setItem("formSubmitted", "true");
+
+                // ✅ Redirect to studentportal.html
+                window.location.href = "/studentportal.html";
+            } else {
+                alert("❌ Error submitting form: " + data.message);
+            }
+        } catch (error) {
             console.error("Error submitting form:", error);
-            alert("There was an error submitting the form.");
-        });
+            alert("❌ There was an error submitting the form.");
+        }
     });
 });

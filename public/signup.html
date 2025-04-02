@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up Form</title>
     <link rel="stylesheet" href="signup.css">
-
 </head>
 <body>
     <div class="container">
@@ -14,30 +13,27 @@
         </div>
         <div class="form-section">
             <h2>SIGN UP</h2>
-            <form>
-                <label>First Name</label>
-                <input type="text" placeholder="First Name">
+            <form id="signupForm">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Username" required>
 
-                <label>Last Name</label>
-                <input type="text" placeholder="Last Name">
+                <label for="regNo">Registration Number</label>
+                <input type="text" id="regNo" name="registrationNumber" placeholder="Registration Number" required>
 
-                <label>Email</label>
-                <input type="email" placeholder="Email">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Email" required>
 
-                <label>Password</label>
-                <div class="password-field">
-                    <input type="password" placeholder="Password">
-                </div>
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Password" required>
 
-                <label>Confirm Password</label>
-                <div class="password-field">
-                    <input type="password" placeholder="Confirm Password">
-                </div>
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
 
                 <button type="submit">Submit</button>
             </form>
-            
         </div>
     </div>
+
+    <script src="signup.js"></script>
 </body>
 </html>
