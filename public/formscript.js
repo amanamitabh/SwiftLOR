@@ -6,8 +6,8 @@ document.addEventListener("DOMContentLoaded", function () {
             dot.classList.add("dot");
 
             // Random starting position
-            dot.style.left = Math.random() * 100 + "vw"; // Random X position
-            dot.style.top = Math.random() * 100 + "vh";  // Random Y position
+            dot.style.left = Math.random() * 100 + "vw";
+            dot.style.top = Math.random() * 100 + "vh";
 
             // Random animation properties
             dot.style.animationDuration = (Math.random() * 5 + 5) + "s";
@@ -61,6 +61,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (response.ok) {
                 console.log("Server Response:", data);
+
+                // ✅ Send Email after successful form submission
+                await fetch("http://localhost:5000/send-email", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(formData)
+                });
 
                 // ✅ Store a success flag in sessionStorage
                 sessionStorage.setItem("formSubmitted", "true");

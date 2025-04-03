@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        const formData = { username, registrationNumber, email, password }; // ✅ Fixed issue
+        const formData = { name: username, registrationNumber, email, password }; // ✅ Fixed issue
 
         try {
             const response = await fetch("http://localhost:5000/signup", {

@@ -5,10 +5,18 @@ const { Pool } = require("pg"); // PostgreSQL Client
 const bcrypt = require("bcrypt"); // For password hashing
 const cors = require("cors"); // Handle CORS issues
 const path = require("path");
+const nodemailer = require('nodemailer');
 
 const app = express();
 const PORT = 5000;
 const PUBLIC_DIR = path.join(__dirname, "public");
+
+app.use(express.static("public"));
+
+// OR manually define a route for the favicon
+app.get("/favicon.ico", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "favicon.ico"));
+});
 
 // PostgreSQL Connection Pool
 const pool = new Pool({
@@ -147,6 +155,96 @@ app.post("/student/login", async (req, res) => {
         res.status(500).json({ message: "Server error, could not log in" });
     }
 });
+
+
+app.post("/submit-form", async (req, res) => {
+    const client = await pool.connect(); // Start a database transaction
+    try {
+        const { registrationNumber, name, examScore, facultyName, facultyID, facultyEmail, date, universities } = req.body;
+
+        // Ensure examScore is an integer
+        const parsedExamScore = parseInt(examScore);
+        if (isNaN(parsedExamScore)) {
+            return res.status(400).json({ message: "Invalid exam score. Must be a number." });
+        }
+
+        // Ensure date is in the correct format (Convert "dd/mm/yyyy" to "yyyy-mm-dd")
+        const formattedDate = date.split("/").reverse().join("-");
+
+        await client.query("BEGIN"); // Start transaction
+
+        // ✅ Insert into the `submissions` table
+        const submissionQuery = `
+            INSERT INTO submissions (registration_number, name, exam_score, faculty_name, faculty_id, faculty_email, date, universities) 
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            RETURNING id;
+        `;
+        const submissionValues = [registrationNumber, name, parsedExamScore, facultyName, facultyID, facultyEmail, formattedDate, universities];
+        const submissionResult = await client.query(submissionQuery, submissionValues);
+        const submissionId = submissionResult.rows[0].id;
+
+        console.log("✅ Submission stored in DB with ID:", submissionId);
+
+        // ✅ Insert into the `documents` table with `file_data = NULL`
+        const documentQuery = `
+            INSERT INTO documents (registration_number, faculty_id, file_data) 
+            VALUES ($1, $2, NULL);
+        `;
+        await client.query(documentQuery, [registrationNumber, facultyID]);
+
+        console.log("✅ Document entry created with NULL file_data");
+
+        await client.query("COMMIT"); // Commit transaction
+
+        // ✅ Send Email after successful DB storage
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            }
+        });
+
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: facultyEmail,
+            subject: "New Student Request for LOR",
+            text: `Dear ${facultyName},
+
+A student has requested an LOR.
+
+📌 **Student Details**:
+- **Name**: ${name}
+- **Registration Number**: ${registrationNumber}
+- **Exam Score**: ${examScore}
+
+📌 **Universities Applied**:
+${universities.join(", ") || "Not specified"}
+
+📅 **Date of Request**: ${date}
+
+Please review the request at your earliest convenience.
+
+Best Regards,
+SwiftLOR System
+`
+        };
+
+        await transporter.sendMail(mailOptions);
+        console.log("✅ Email sent to:", facultyEmail);
+
+        // ✅ Respond with success
+        res.status(200).json({ message: "Form submitted, email sent, and document record created!", submissionId });
+
+    } catch (error) {
+        await client.query("ROLLBACK"); // Rollback in case of error
+        console.error("❌ Error:", error);
+        res.status(500).json({ message: "Server error: Could not process request." });
+    } finally {
+        client.release(); // Release the client back to the pool
+    }
+});
+
 
 
 // ✅ **Start the Server**
