@@ -13,9 +13,8 @@
     <ul class="navbar">
         <li class="navelem"><h1 class="title">SwiftLOR</h1></li>
         <li class="navelem"><a href="aboutus.html">About Us</a></li>
-        <li class="navelem"><a href="#news">News</a></li>
         <li class="navelem"><a href="#contact">Contact</a></li>
-        <li class="navelem" style="margin-left: auto;"><img src="user.png" width="40px" height="40px" style="padding-top: 8px; padding-right: 8px;"></li>
+        <li class="navelem" id="logout" style="margin-left: auto;"><a href="index.html" style="margin-left: -36px; color: red;">Logout</a></li>
       </ul>
 
     <div class="hero">
@@ -29,6 +28,7 @@
         <div class="search-bar">
             <input type="text" id="regNoInput" placeholder="🔍 Search for a registration number">
         </div>
+        <p id="statusMessage" style="color: red; font-size: 14px; margin-top: 5px;"></p> <!-- Status message -->
         <div class="button-container">
             <button id="generateLOR" disabled>Generate Standard LOR Template </button>
             <button id="customLOR" disabled>Give Your Own Recommendation</button>

@@ -6,10 +6,15 @@ const bcrypt = require("bcrypt"); // For password hashing
 const cors = require("cors"); // Handle CORS issues
 const path = require("path");
 const nodemailer = require('nodemailer');
+const multer = require("multer");
 
 const app = express();
 const PORT = 5000;
 const PUBLIC_DIR = path.join(__dirname, "public");
+
+// Configure multer for file uploads (store in memory)
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 app.use(express.static("public"));
 
@@ -242,6 +247,108 @@ SwiftLOR System
         res.status(500).json({ message: "Server error: Could not process request." });
     } finally {
         client.release(); // Release the client back to the pool
+    }
+});
+
+
+app.get("/check-document/:registrationNumber", async (req, res) => {
+    try {
+        const { registrationNumber } = req.params;
+
+        // Query the documents table
+        const query = `
+            SELECT 1 FROM documents 
+            WHERE registration_number = $1 AND file_data IS NULL;
+        `;
+        const result = await pool.query(query, [registrationNumber]);
+
+        if (result.rowCount > 0) {
+            res.status(200).json({ exists: true });
+        } else {
+            res.status(404).json({ exists: false });
+        }
+    } catch (error) {
+        console.error("❌ Error checking document:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
+
+app.get("/download-lor/:registrationNumber", async (req, res) => {
+    try {
+        const { registrationNumber } = req.params;
+
+        // Query the database to check if the LOR exists
+        const query = `SELECT file_data FROM documents WHERE registration_number = $1 AND file_data IS NOT NULL;`;
+        const result = await pool.query(query, [registrationNumber]);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: "❌ LOR not found or not yet uploaded." });
+        }
+
+        const pdfBuffer = result.rows[0].file_data;
+
+        // Set headers for PDF download
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", `attachment; filename="LOR_${registrationNumber}.pdf"`);
+        res.send(pdfBuffer);
+
+    } catch (error) {
+        console.error("❌ Error fetching LOR:", error);
+        res.status(500).json({ message: "Server error: Could not fetch LOR." });
+    }
+});
+
+
+app.post("/upload-pdf", upload.single("pdfFile"), async (req, res) => {
+    try {
+        const { registrationNumber } = req.body;
+        const fileBuffer = req.file?.buffer; // Get uploaded file as buffer
+
+        if (!registrationNumber || !fileBuffer) {
+            return res.status(400).json({ message: "Missing registration number or file." });
+        }
+
+        // Update the documents table
+        const query = `
+            UPDATE documents
+            SET file_data = $1
+            WHERE registration_number = $2
+            RETURNING *;
+        `;
+        const values = [fileBuffer, registrationNumber];
+
+        const result = await pool.query(query, values);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: "No matching registration number found." });
+        }
+
+        res.status(200).json({ message: "PDF uploaded successfully!" });
+
+    } catch (error) {
+        console.error("❌ Error uploading PDF:", error);
+        res.status(500).json({ message: "Server error: Could not upload PDF." });
+    }
+});
+
+app.get("/view-submission/:registrationNumber", async (req, res) => {
+    try {
+        const { registrationNumber } = req.params;
+
+        // Corrected SQL query
+        const query = `SELECT name, exam_score, faculty_name, faculty_email, date, universities FROM submissions WHERE registration_number = $1;`;
+        const result = await pool.query(query, [registrationNumber]);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: "❌ No submission found for this registration number." });
+        }
+
+        res.json(result.rows[0]);
+
+    } catch (error) {
+        console.error("❌ Error fetching submission:", error);
+        res.status(500).json({ message: "Server error: Could not fetch submission." });
     }
 });
 

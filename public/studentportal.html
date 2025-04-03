@@ -14,9 +14,8 @@
     <ul class="navbar">
       <li class="navelem"><h1 class="title">SwiftLOR</h1></li>
       <li class="navelem"><a href="aboutus.html">About Us</a></li>
-      <li class="navelem"><a href="#news">News</a></li>
-      <li class="navelem"><a href="#contact">Contact</a></li>
-      <li class="navelem" style="margin-left: auto;"><img src="user.png" width="40px" height="40px" style="padding-top: 8px; padding-right: 8px;"></li>
+      <li class="navelem"><a href="contactus.html">Contact</a></li>
+      <li class="navelem" id="logout" style="margin-left: auto;"><a href="index.html" style="margin-left: -36px; color: red;">Logout</a></li>
     </ul>
     <div class="partition1">
       <div id="success-message" style="
@@ -62,36 +61,126 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {
+        // ✅ Form success message logic
         if (sessionStorage.getItem("formSubmitted") === "true") {
-            // ✅ Create success message div
-            const successMessage = document.createElement("div");
-            successMessage.textContent = "✅ Form submitted successfully!";
-            successMessage.style.position = "fixed";
-            successMessage.style.top = "10px";
-            successMessage.style.left = "50%";
-            successMessage.style.transform = "translateX(-50%)";
-            successMessage.style.background = "black";
-            successMessage.style.color = "white";
-            successMessage.style.padding = "12px 20px";
-            successMessage.style.borderRadius = "50px"; // Rounded Dynamic Island shape
-            successMessage.style.boxShadow = "0px 4px 10px rgba(0, 0, 0, 0.1)";
-            successMessage.style.fontSize = "14px";
-            successMessage.style.fontWeight = "bold";
-            successMessage.style.transition = "opacity 1s ease-in-out";
-    
-            document.body.appendChild(successMessage);
-    
-            // ✅ Remove session flag
+            showDynamicMessage("✅ Form submitted successfully!", "black", "white");
             sessionStorage.removeItem("formSubmitted");
+        }
     
-            // ✅ Hide message after 5 seconds
+        // ✅ LOR Download Logic
+        const downloadButton = document.querySelector(".buttons-container .button:nth-child(2)");
+        downloadButton.addEventListener("click", async function () {
+            const registrationNumber = prompt("Enter your registration number:");
+            if (!registrationNumber) {
+                alert("❌ Registration number is required.");
+                return;
+            }
+    
+            // Show "Downloading..." message
+            const downloadMessage = showDynamicMessage("⏳ Downloading your LOR...", "black", "white");
+    
+            try {
+                const response = await fetch(`/download-lor/${registrationNumber}`);
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message);
+                }
+    
+                // Convert to blob and trigger download
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `LOR_${registrationNumber}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+    
+                // Update message to success
+                updateDynamicMessage(downloadMessage, "✅ LOR Downloaded!", "green", "white", 5000);
+            } catch (error) {
+                updateDynamicMessage(downloadMessage, `❌ ${error.message}`, "red", "white", 5000);
+            }
+        });
+    
+        // ✅ View Submission Logic (Review Application - Timeout: 10s)
+        const viewSubmissionButton = document.querySelector(".buttons-container .button:nth-child(3)");
+        viewSubmissionButton.addEventListener("click", async function () {
+            const registrationNumber = prompt("Enter your registration number:");
+            if (!registrationNumber) {
+                alert("❌ Registration number is required.");
+                return;
+            }
+    
+            // Show "Fetching submission..." message
+            const fetchMessage = showDynamicMessage("⏳ Fetching submission details...", "black", "white");
+    
+            try {
+                const response = await fetch(`/view-submission/${registrationNumber}`);
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message);
+                }
+    
+                const data = await response.json();
+                const details = `
+                    📝 Name: ${data.name} <br>
+                    🎯 Exam Score: ${data.exam_score} <br>
+                    👨‍🏫 Faculty: ${data.faculty_name} (${data.faculty_email}) <br>
+                    📅 Submission Date: ${data.date} <br>
+                    🎓 Universities: ${data.universities.join(", ")}
+                `;
+    
+                // Update message with submission details (Visible for 10s)
+                updateDynamicMessage(fetchMessage, details, "green", "white", 10000);
+    
+            } catch (error) {
+                updateDynamicMessage(fetchMessage, `❌ ${error.message}`, "red", "white", 5000);
+            }
+        });
+    
+        // ✅ Function to create a Dynamic Island-style message
+        function showDynamicMessage(text, bgColor, textColor) {
+            const messageDiv = document.createElement("div");
+            messageDiv.innerHTML = text;
+            messageDiv.style.position = "fixed";
+            messageDiv.style.top = "20px";
+            messageDiv.style.left = "50%";
+            messageDiv.style.transform = "translateX(-50%)";
+            messageDiv.style.background = bgColor;
+            messageDiv.style.color = textColor;
+            messageDiv.style.padding = "12px 20px";
+            messageDiv.style.borderRadius = "30px";
+            messageDiv.style.fontSize = "14px";
+            messageDiv.style.fontWeight = "bold";
+            messageDiv.style.boxShadow = "0px 4px 10px rgba(0, 0, 0, 0.2)";
+            messageDiv.style.opacity = "1";
+            messageDiv.style.transition = "opacity 0.5s ease-in-out, top 0.5s ease-in-out";
+            messageDiv.style.zIndex = "1000";
+            messageDiv.style.textAlign = "center";
+    
+            document.body.appendChild(messageDiv);
+            return messageDiv;
+        }
+    
+        // ✅ Function to update and hide the message
+        function updateDynamicMessage(messageDiv, newText, bgColor, textColor, timeout) {
+            messageDiv.innerHTML = newText;
+            messageDiv.style.background = bgColor;
+            messageDiv.style.color = textColor;
+    
+            // Hide message after a custom timeout
             setTimeout(() => {
-                successMessage.style.opacity = "0";
-                setTimeout(() => successMessage.remove(), 1000);
-            }, 5000);
+                messageDiv.style.opacity = "0";
+                setTimeout(() => messageDiv.remove(), 1000);
+            }, timeout);
         }
     });
     </script>
+    
+    
+    
     
 
   </body>
