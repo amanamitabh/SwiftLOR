@@ -1,6 +1,7 @@
 require("dotenv").config(); // Load environment variables
 
 const express = require("express");
+const PDFDocument = require("pdfkit");
 const { Pool } = require("pg"); // PostgreSQL Client
 const bcrypt = require("bcrypt"); // For password hashing
 const cors = require("cors"); // Handle CORS issues
@@ -352,6 +353,70 @@ app.get("/view-submission/:registrationNumber", async (req, res) => {
     }
 });
 
+
+app.post("/generate-lor", async (req, res) => {
+    const { registrationNumber } = req.body;
+
+    if (!registrationNumber) {
+        return res.status(400).json({ message: "Missing registration number." });
+    }
+
+    try {
+        // Fetch student data
+        const query = `
+            SELECT name, exam_score, faculty_name, faculty_id, faculty_email, date, universities 
+            FROM submissions 
+            WHERE registration_number = $1;
+        `;
+        const result = await pool.query(query, [registrationNumber]);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: "Student submission not found." });
+        }
+
+        const student = result.rows[0];
+
+        // Create a new PDF document
+        const doc = new PDFDocument();
+        let buffers = [];
+        doc.on("data", buffers.push.bind(buffers));
+        doc.on("end", async function () {
+            const pdfBuffer = Buffer.concat(buffers);
+
+            // Store PDF in the database
+            const updateQuery = `
+                UPDATE documents 
+                SET file_data = $1 
+                WHERE registration_number = $2;
+            `;
+            await pool.query(updateQuery, [pdfBuffer, registrationNumber]);
+
+            res.status(200).json({ message: "LOR generated and saved successfully!" });
+        });
+
+        // Start writing content to the PDF
+        doc.fontSize(16).text("Letter of Recommendation", { align: "center" });
+        doc.moveDown();
+        doc.fontSize(12).text(`To Whom It May Concern,`);
+        doc.moveDown();
+        doc.text(
+            `I am pleased to write this letter of recommendation for ${student.name}, ` +
+            `who has applied to the following universities: ${student.universities.join(", ")}. ` +
+            `Based on my interactions with the student, I can confidently recommend them.`
+        );
+        doc.moveDown();
+        doc.text(`Exam Score: ${student.exam_score}`);
+        doc.moveDown();
+        doc.text(`Best regards,`);
+        doc.text(`${student.faculty_name}`);
+        doc.text(`Email: ${student.faculty_email}`);
+        doc.end(); // Finalize the document
+
+    } catch (error) {
+        console.error("❌ Error generating LOR:", error);
+        res.status(500).json({ message: "Server error: Could not generate LOR." });
+    }
+});
 
 
 // ✅ **Start the Server**

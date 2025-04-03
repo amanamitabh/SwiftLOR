@@ -41,6 +41,35 @@ document.addEventListener("DOMContentLoaded", function () {
         checkDocument(registrationNumber);
     });
 
+    // Handle PDF generation for "Generate Standard LOR Template"
+    generateLORButton.addEventListener("click", async function () {
+        const registrationNumber = regNoInput.value.trim();
+
+        if (!registrationNumber) {
+            alert("Please enter a registration number.");
+            return;
+        }
+
+        try {
+            const response = await fetch("/generate-lor", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ registrationNumber })
+            });
+
+            const result = await response.json();
+            alert(result.message);
+
+            if (response.ok) {
+                generateLORButton.disabled = true; // Disable after successful generation
+                checkDocument(registrationNumber); // Refresh button status
+            }
+        } catch (error) {
+            console.error("❌ Error generating LOR:", error);
+            alert("Error generating LOR. Please try again.");
+        }
+    });
+
     // Handle PDF upload for "Give Your Own Recommendation"
     customLORButton.addEventListener("click", async function () {
         const registrationNumber = regNoInput.value.trim();

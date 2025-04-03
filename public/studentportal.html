@@ -63,9 +63,15 @@
     document.addEventListener("DOMContentLoaded", function () {
         // ✅ Form success message logic
         if (sessionStorage.getItem("formSubmitted") === "true") {
-            showDynamicMessage("✅ Form submitted successfully!", "black", "white");
+            const successMessage = showDynamicMessage("✅ Form submitted successfully!", "black", "white");
             sessionStorage.removeItem("formSubmitted");
+            setTimeout(() => {
+            successMessage.style.opacity = "0";
+            setTimeout(() => successMessage.remove(), 1000);
+            }, 5000);
         }
+
+
     
         // ✅ LOR Download Logic
         const downloadButton = document.querySelector(".buttons-container .button:nth-child(2)");
