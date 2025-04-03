@@ -34,4 +34,18 @@ document.addEventListener("DOMContentLoaded", function () {
             loginButton.disabled = false;
         }
     });
+
+    // ✅ Password Toggle Logic
+    const passwordInput = document.getElementById("password");
+    const toggleIcon = document.querySelector(".toggle-password");
+
+    toggleIcon.addEventListener("click", function () {
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            toggleIcon.textContent = "👁"; // Hide password icon
+        } else {
+            passwordInput.type = "password";
+            toggleIcon.textContent = "👁"; // Show password icon
+        }
+    });
 });
