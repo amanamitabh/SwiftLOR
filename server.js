@@ -402,7 +402,11 @@ app.post("/generate-lor", async (req, res) => {
         doc.text(
             `I am pleased to write this letter of recommendation for ${student.name}, ` +
             `who has applied to the following universities: ${student.universities.join(", ")}. ` +
-            `Based on my interactions with the student, I can confidently recommend them.`
+            `I have had the opportunity to observe their academic growth and intellectual curiosity firsthand.` +
+            `They actively participated in discussions and contributed valuable insights, which showcased a deep understanding of the subject matter.` +
+            `What truly sets ${student.name} apart is their leadership, teamwork, creativity, perseverance, extracurricular activities, projects, and research work .` +
+            `Based on my interactions with the student, I can confidently recommend them.` +
+            `Please feel free to contact me should you require any further information.`
         );
         doc.moveDown();
         doc.text(`Exam Score: ${student.exam_score}`);
