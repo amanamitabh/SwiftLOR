@@ -56,6 +56,17 @@ Get started by cloning the repository and navigating into the project directory:
 Inside the project folder, install the required Node.js packages: 
 `npm install` 
 
+ ### 3️⃣ Configure Environment Variables
+
+ Create a .env file in the project root and add the required environment variables:
+```
+DATABASE_URL=your_database_connection_string
+EMAIL_USER=your_email_id
+EMAIL_PASS=your_email_app_password
+```
+
+The App Password can be generated on your account only after two-factor authentication (2FA) is enabled.
+
  ### 3️⃣ Start the Server 
  
 Run the following command to start the Node.js server:  
